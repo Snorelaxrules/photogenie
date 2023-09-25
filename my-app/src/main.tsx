@@ -1,5 +1,5 @@
 import { Row, Col } from "react-bootstrap";
-
+import React from "react";
 import { useState } from "react";
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 import BrushIcon from '@mui/icons-material/Brush';

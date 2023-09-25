@@ -65,7 +65,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
                 const formData = new FormData();
                 formData.append("file", file, file.name);
                 formData.append("fileType", "image");
-                axios.post(process.env["REACT_APP_APIURL"] + "/uploadFile", formData, {
+                axios.post("/uploadFile", formData, {
                     headers: {
                         "Authorization": "Bearer " + "TODO: to fill in",
                     },
