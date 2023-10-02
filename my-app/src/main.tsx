@@ -12,10 +12,15 @@ import FileUpload from "./upload";
 
 const MainPage = () => {
     const [baseImage, setBaseImage] = useState("");
-
+    const [resultImage, setResultImage] = useState("");
     const uploadSuccess = (imgItem: string) => {
-        setBaseImage(imgItem);
+        setResultImage(imgItem);
     }
+
+    const fileSelected = (imgItem: string) => {
+        setBaseImage(imgItem);
+        alert(imgItem);
+    }    
 
     return (
         <div style={{
@@ -50,7 +55,7 @@ const MainPage = () => {
                                 justifyContent: 'center',
                             }}
                         >
-                            <FileUpload onUploadSuccess={uploadSuccess} />
+                            <FileUpload onUploadSuccess={uploadSuccess} onFileSelected={fileSelected}/>
                         </div>
                     </Col>
                 </Row>
@@ -63,22 +68,17 @@ const MainPage = () => {
                 borderLeft: '20px'
             }}>
                 <h1 style={{ marginTop: '30px' }}>Canny Edge Examples</h1>
+                {baseImage.length > 0 && 
                 <Row>
                     <Col xl="6" className="d-flex justify-content-center">
                         <ReactCompareSlider
-                            style={{ width: '98%', display: "flex", alignItems: "center", margin: '20px' }}
-                            itemOne={<ReactCompareSliderImage src='/images/dragonsketch.jpg' alt="Dragon Sketch" />}
-                            itemTwo={<ReactCompareSliderImage src='/images/colorfuldragon.png' alt="Colorful Dragon" />}
-                        />
-                    </Col>
-                    <Col xl="6" className="d-flex justify-content-center">
-                        <ReactCompareSlider
-                            style={{ width: '98%', margin: '20px' }}
-                            itemOne={<ReactCompareSliderImage src='/images/womansketch.jpg' alt="Sketch of woman" />}
-                            itemTwo={<ReactCompareSliderImage src='/images/woman.jpg' alt="Woman" />}
+                            style={{ width: '512px', height: '512px', display: "flex", alignItems: "center", margin: '20px' }}
+                            itemOne={<ReactCompareSliderImage src={baseImage} alt="Sketch" />}
+                            itemTwo={<ReactCompareSliderImage src={resultImage} alt="Result" />}
                         />
                     </Col>
                 </Row>
+                }
                 <Row>
                     <Col lg={4}>
                         <BrushIcon style={{ width: '60px', height: '60px' }} />
