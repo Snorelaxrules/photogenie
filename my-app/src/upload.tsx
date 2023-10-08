@@ -14,16 +14,11 @@ import { useDropzone } from "react-dropzone";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import DialogMessageBox from "./DialogMessageBox";
 import "./css/main.css";
-import { send } from "process";
 interface FileUploadProps {
-    onUploadSuccess?: (imgItem: string) => void;
-    onFileSelected?: (imgItem: string) => void;
+    onFileSelected?: (fileSelected: File) => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({
-    onUploadSuccess,
-    onFileSelected,
-}) => {
+const FileUpload: React.FC<FileUploadProps> = ({ onFileSelected }) => {
     const [fileUploading, setFileUploading] = useState(false);
     const [selectedFileName, setSelectedFileName] = useState<string>("");
     const [progress, setProgress] = useState(0);
@@ -37,8 +32,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
     const navigate = useNavigate();
     const [imgUrl, setImgUrl] = useState("");
     const [activeFileId, setActiveFileId] = useState<string | null>(null);
-    const APIKey =
-        "e7ec294e78cf50e095ceb342ea56c651861b605c403897b123463d7320c87896c5aa365b8c4e3c47d9e4646d125ae1b5";
     /*const onDrop = ((acceptedFiles: File[]) => {
         alert("DROP?");
         processDropFiles(acceptedFiles);
@@ -47,37 +40,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const url = URL.createObjectURL(acceptedFiles[0]);
         if (onFileSelected) {
-            onFileSelected(url);
+            onFileSelected(acceptedFiles[0]);
         }
-        const form = new FormData();
-        form.append("sketch_file", acceptedFiles[0]);
-        form.append("prompt", "an owl on a branch, cinematic");
-        alert("Dropped");
-        fetch("https://clipdrop-api.co/sketch-to-image/v1/sketch-to-image", {
-            method: "POST",
-            headers: {
-                "x-api-key": APIKey,
-            },
-            body: form,
-        })
-            .then((response) => {
-                alert("Buffer" + response.status + " " + response.statusText);
-                return response.arrayBuffer();
-            })
-            .then((buffer) => {
-                const blob = new Blob([buffer], { type: "image/jpeg" }); // Adjust the type accordingly
-
-                // Create a URL for the Blob
-                const result = URL.createObjectURL(blob);
-                setImgUrl(result);
-                if (onUploadSuccess) {
-                    onUploadSuccess(result);
-                }
-                // Now you can use the `imageUrl` to display the image
-                /*const imageElement = document.createElement('img');
-            imageElement.src = imageUrl;
-            document.body.appendChild(imageElement);*/
-            });
     }, []);
 
     const processDropFiles = async (acceptedFiles: File[]) => {

@@ -18,13 +18,43 @@ const MainPage = () => {
     const [baseImage, setBaseImage] = useState("");
     const [resultImage, setResultImage] = useState("");
     const [prompt, setPrompt] = useState("");
+    const APIKey =
+        "e7ec294e78cf50e095ceb342ea56c651861b605c403897b123463d7320c87896c5aa365b8c4e3c47d9e4646d125ae1b5";
     const uploadSuccess = (imgItem: string) => {
         setResultImage(imgItem);
     };
 
-    const fileSelected = (imgItem: string) => {
-        setBaseImage(imgItem);
-        alert(imgItem);
+    const fileSelected = (acceptedFile: File) => {
+        const url = URL.createObjectURL(acceptedFile);
+        setBaseImage(url);
+        alert(url);
+        const form = new FormData();
+        form.append("sketch_file", acceptedFile);
+        form.append("prompt", prompt);
+        alert("Dropped");
+        if (1 === 1) return;
+        fetch("https://clipdrop-api.co/sketch-to-image/v1/sketch-to-image", {
+            method: "POST",
+            headers: {
+                "x-api-key": APIKey,
+            },
+            body: form,
+        })
+            .then((response) => {
+                alert("Buffer" + response.status + " " + response.statusText);
+                return response.arrayBuffer();
+            })
+            .then((buffer) => {
+                const blob = new Blob([buffer], { type: "image/jpeg" }); // Adjust the type accordingly
+
+                // Create a URL for the Blob
+                const result = URL.createObjectURL(blob);
+                uploadSuccess(result);
+                // Now you can use the `imageUrl` to display the image
+                /*const imageElement = document.createElement('img');
+            imageElement.src = imageUrl;
+            document.body.appendChild(imageElement);*/
+            });
     };
 
     const handlePromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -97,10 +127,7 @@ const MainPage = () => {
                                     marginBottom: "100px",
                                 }}
                             >
-                                <FileUpload
-                                    onUploadSuccess={uploadSuccess}
-                                    onFileSelected={fileSelected}
-                                />
+                                <FileUpload onFileSelected={fileSelected} />
                             </div>
                             <TextField
                                 style={{
