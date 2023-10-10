@@ -6,18 +6,21 @@ import {
     ReactCompareSliderImage,
 } from "react-compare-slider";
 import BrushIcon from "@mui/icons-material/Brush";
-import SearchIcon from "@mui/icons-material/Search";
-import LockIcon from "@mui/icons-material/Lock";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import TuneIcon from "@mui/icons-material/Tune";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import HighQualityIcon from "@mui/icons-material/HighQuality";
 import FileUpload from "./upload";
 import { TextField } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
-const MainPage = () => {
+const RemoveBackgroundPage = () => {
     const [baseImage, setBaseImage] = useState("");
     const [resultImage, setResultImage] = useState("");
     const [prompt, setPrompt] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [file, setFile] = useState<File | null>(null);
     const APIKey =
         "e7ec294e78cf50e095ceb342ea56c651861b605c403897b123463d7320c87896c5aa365b8c4e3c47d9e4646d125ae1b5";
     const uploadSuccess = (imgItem: string) => {
@@ -25,15 +28,20 @@ const MainPage = () => {
     };
 
     const fileSelected = (acceptedFile: File) => {
+        setFile(acceptedFile);
         const url = URL.createObjectURL(acceptedFile);
         setBaseImage(url);
         alert(url);
+    };
+
+    const generate = () => {
         const form = new FormData();
-        form.append("sketch_file", acceptedFile);
-        form.append("prompt", prompt);
+        if (file === null) return;
+        form.append("image_file", file);
         alert("Dropped");
-        if (1 === 1) return;
-        fetch("https://clipdrop-api.co/sketch-to-image/v1/sketch-to-image", {
+        //if (1 === 1) return;
+        setLoading(true);
+        fetch("https://clipdrop-api.co/remove-background/v1", {
             method: "POST",
             headers: {
                 "x-api-key": APIKey,
@@ -50,6 +58,7 @@ const MainPage = () => {
                 // Create a URL for the Blob
                 const result = URL.createObjectURL(blob);
                 uploadSuccess(result);
+                setLoading(false);
                 // Now you can use the `imageUrl` to display the image
                 /*const imageElement = document.createElement('img');
             imageElement.src = imageUrl;
@@ -98,7 +107,7 @@ const MainPage = () => {
                                 color: "white",
                             }}
                         >
-                            Turn sketches into drawings for free!
+                            Background Removal!
                         </h2>
                         <h3
                             style={{
@@ -108,8 +117,8 @@ const MainPage = () => {
                                 color: "white",
                             }}
                         >
-                            Create images from sketches using our ControlNet
-                            CannyEdge
+                            Remove the background of images with the use of our
+                            AI!
                         </h3>
                     </Col>
                     <Col
@@ -122,24 +131,34 @@ const MainPage = () => {
                         <div>
                             <div
                                 style={{
-                                    width: "400px",
-                                    maxHeight: "400px",
-                                    marginBottom: "100px",
+                                    width: "500px",
+                                    maxHeight: "600px",
+                                    marginBottom: "50px",
                                 }}
                             >
                                 <FileUpload onFileSelected={fileSelected} />
                             </div>
-                            <TextField
+                            <LoadingButton
+                                loading={loading}
                                 style={{
-                                    width: "400px",
+                                    backgroundColor:
+                                        file === null || loading
+                                            ? "#ccc"
+                                            : "#007bff", // Change colors as needed
+                                    color: "#fff",
+                                    padding: "10px 20px",
+                                    borderRadius: "5px",
+                                    cursor: loading ? "not-allowed" : "pointer",
+                                    border: "none",
+                                    outline: "none",
+                                    marginTop: "10px",
+                                    marginLeft: "180px",
                                 }}
-                                id="filled-helperText"
-                                variant="filled"
-                                label="Enter your prompt"
-                                value={prompt}
-                                onChange={handlePromptChange}
-                                helperText="Example: Rabbit on the moon 4K HD"
-                            />
+                                onClick={generate}
+                                disabled={file === null || loading}
+                            >
+                                Generate
+                            </LoadingButton>
                         </div>
                     </Col>
                 </Row>
@@ -155,14 +174,21 @@ const MainPage = () => {
             >
                 {baseImage.length > 0 && (
                     <div>
-                        <h1 style={{ marginTop: "30px" }}>
-                            Canny Edge Examples
-                        </h1>
+                        <h1 style={{ marginTop: "30px" }}>Initial vs Result</h1>
                         <Row>
-                            <Col
-                                xl="6"
-                                className="d-flex justify-content-center"
-                            >
+                            <Col>
+                                <img
+                                    src={baseImage}
+                                    style={{
+                                        width: "512px",
+                                        height: "512px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        margin: "20px",
+                                    }}
+                                />
+                            </Col>
+                            <Col>
                                 <ReactCompareSlider
                                     style={{
                                         width: "512px",
@@ -190,65 +216,32 @@ const MainPage = () => {
                 )}
                 <Row>
                     <Col md={4}>
+                        <CheckCircleOutlineIcon
+                            style={{ width: "60px", height: "60px" }}
+                        />
+                        <h2>Effortless Background Removal</h2>
+                        <p>
+                            Easily remove backgrounds from your images with just
+                            a few clicks. Our intuitive tool streamlines the
+                            process for you.
+                        </p>
+                    </Col>
+                    <Col md={4}>
                         <BrushIcon style={{ width: "60px", height: "60px" }} />
-                        <h2>Convert Sketches</h2>
+                        <h2>Precision Editing Control</h2>
                         <p>
-                            Transform your rough sketches into detailed images
-                            effortlessly using advanced AI technologies like
-                            ControlNet.
+                            Take full control over your image editing. Use
+                            manual tools to fine-tune selections and ensure
+                            perfect background removal.
                         </p>
                     </Col>
-                    <Col md={4}>
-                        <SearchIcon style={{ width: "60px", height: "60px" }} />
-                        <h2>Enhance Edges</h2>
-                        <p>
-                            Utilize Canny Edge detection algorithms to enhance
-                            the edges and contours of your sketches, giving them
-                            a professional look.
-                        </p>
-                    </Col>
-                    <Col md={4}>
-                        <LockIcon style={{ width: "60px", height: "60px" }} />
-                        <h2>Privacy Assurance</h2>
-                        <p>
-                            Your sketches are treated with utmost privacy. We do
-                            not store or use your artwork for any other
-                            purposes, ensuring your creative work remains
-                            confidential.
-                        </p>
-                    </Col>
-                </Row>
-                <Row>
                     <Col md={4}>
                         <TuneIcon style={{ width: "60px", height: "60px" }} />
-                        <h2>AI-Powered Enhancement</h2>
+                        <h2>AI-Powered</h2>
                         <p>
-                            Our AI models go beyond simple conversions. They
-                            enhance the quality and details of your
-                            sketch-to-image transformations, resulting in
-                            stunning visual output.
-                        </p>
-                    </Col>
-                    <Col md={4}>
-                        <HighlightOffIcon
-                            style={{ width: "60px", height: "60px" }}
-                        />
-                        <h2>Artifact Removal</h2>
-                        <p>
-                            Remove unwanted artifacts and imperfections from
-                            your converted images. Our AI technology ensures
-                            your artwork looks clean and professional.
-                        </p>
-                    </Col>
-                    <Col md={4}>
-                        <HighQualityIcon
-                            style={{ width: "60px", height: "60px" }}
-                        />
-                        <h2>High-Resolution Output</h2>
-                        <p>
-                            Unlike traditional methods, our AI-driven solution
-                            can produce high-resolution sketch-to-image
-                            conversions with stunning clarity and detail.
+                            Our AI models ensure that your new image is exactly
+                            as you want it, without any blemishes, compared to
+                            normal background removal models.
                         </p>
                     </Col>
                 </Row>
@@ -256,4 +249,4 @@ const MainPage = () => {
         </div>
     );
 };
-export default MainPage;
+export default RemoveBackgroundPage;
