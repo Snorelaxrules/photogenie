@@ -39,8 +39,8 @@ const SketchToImagePage = () => {
         if (file === null) return;
         form.append("sketch_file", file);
         form.append("prompt", prompt);
-        alert(baseImage + " " + prompt);
-        alert("Dropped");
+        // alert(baseImage + " " + prompt);
+        // alert("Dropped");
         //if (1 === 1) return;
         setLoading(true);
         fetch("https://clipdrop-api.co/sketch-to-image/v1/sketch-to-image", {
