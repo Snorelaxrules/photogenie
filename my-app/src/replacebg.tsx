@@ -250,39 +250,34 @@ const ReplaceBackgroundPage = () => {
             </div>
             <div
                 style={{
-                    width: "95%",
-                    padding: "10px",
+                    marginLeft: "5%",
+                    marginRight: "5%",
+                    width: "90%",
                     borderRadius: "10px",
-                    borderLeft: "20px",
                 }}
             >
                 {baseImage.length > 0 && resultImage.length ? (
-                    <div>
+                    <div style={{ textAlign: "center" }}>
                         <h1 style={{ marginTop: "30px" }}>
                             Original vs Result
                         </h1>
                         <Row>
-                            <Col>
-                                <ReactCompareSlider
+                            <Col style={{ textAlign: "center" }}>
+                                <img
+                                    src={baseImage}
                                     style={{
-                                        maxWidth: "512px",
                                         width: "100%",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        margin: "20px",
+                                        maxWidth: "512px",
                                     }}
-                                    itemOne={
-                                        <ReactCompareSliderImage
-                                            src={baseImage}
-                                            alt="Sketch"
-                                        />
-                                    }
-                                    itemTwo={
-                                        <ReactCompareSliderImage
-                                            src={resultImage}
-                                            alt="Result"
-                                        />
-                                    }
+                                />
+                            </Col>
+                            <Col style={{ textAlign: "center" }}>
+                                <img
+                                    src={resultImage}
+                                    style={{
+                                        width: "100%",
+                                        maxWidth: "512px",
+                                    }}
                                 />
                             </Col>
                         </Row>
